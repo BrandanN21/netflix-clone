@@ -4,7 +4,7 @@ import "./Row.css";
 
 const base_url = "https://image.tmdb.org/t/p/original/";
 
-function Row({ title, fetchUrl }) {
+function Row({ title, fetchUrl, isLargeRow }) {
   // uses a temp memory to hold an array
   const [movies, setMovies] = useState([]);
 
@@ -17,7 +17,7 @@ function Row({ title, fetchUrl }) {
     // need to make an async call
     async function fetchData() {
       const request = await axios.get(fetchUrl); //outside variable
-      console.table(request);
+      //console.table(request);
       setMovies(request.data.results);
       return request;
     }
@@ -32,8 +32,11 @@ function Row({ title, fetchUrl }) {
         {/* serveral row_poster(s) */}
         {movies.map((movie) => (
           <img
-            className="row_poster"
-            src={`${base_url}${movie.poster_path}`}
+            key={movie.id} //optimization, renders each one at a time rather than all at once
+            className={`row_poster ${isLargeRow && "row_posterLarge"}`}
+            src={`${base_url}${
+              isLargeRow ? movie.poster_path : movie.backdrop_path
+            }`}
             alt={movie.name}
           />
         ))}
